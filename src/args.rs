@@ -21,6 +21,8 @@ pub enum Commands {
     /// Shows a sniptip
     Show { name: String },
 
+    List,
+
     /// Deletes a sniptip
     Delete { name: String },
 }

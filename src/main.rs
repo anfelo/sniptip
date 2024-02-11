@@ -12,7 +12,7 @@ fn main() -> Result<()> {
     // TODO(anfelo): Specify a different path on init
     // where the sniptips will be stored
     let home_path = std::env::var("HOME")?;
-    let sniptips_dir = format!("{}/./{}", home_path, SNIPS_PATH);
+    let sniptips_dir = format!("{}/{}", home_path, SNIPS_PATH);
 
     match &cli.command {
         Commands::Init => sniptip::init(&sniptips_dir)?,
@@ -30,6 +30,11 @@ fn main() -> Result<()> {
             let path = format!("{}/{}", sniptips_dir, name);
             sniptip::show_snip(&path).with_context(|| {
                 format!("Unable to access sniptip <{}> at path: {}", name, path)
+            })?;
+        }
+        Commands::List => {
+            sniptip::list_snips(&sniptips_dir).with_context(|| {
+                format!("Could not read sniptips store at path: {}", sniptips_dir)
             })?;
         }
         Commands::Delete { name } => {

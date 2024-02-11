@@ -1,3 +1,4 @@
+#![feature(fs_try_exists)]
 use std::{
     fs::{self, File},
     io::{self, Write},
@@ -6,7 +7,13 @@ use std::{
 use anyhow::{Context, Result};
 
 pub fn init(path: &String) -> Result<()> {
+    if fs::try_exists(path).is_ok_and(|x| x) {
+        println!("Already initialized!");
+        return Ok(());
+    }
+
     fs::create_dir(path)?;
+    println!("Initialized sniptip at: {}", path);
     Ok(())
 }
 
@@ -21,19 +28,16 @@ pub fn add_snip(path: &String, snip: &String) -> Result<()> {
 }
 
 pub fn query_snip(query: &String, path: &String) -> Result<()> {
-    let dir = fs::read_dir(path)?;
-
-    let paths = dir
-        .map(|res| res.map(|e| e.path()))
-        .collect::<Result<Vec<_>, io::Error>>()?;
-
-    let file_names = paths
-        .iter()
-        .filter(|p| !p.is_dir())
-        .map(|h| h.file_name().unwrap().to_str().unwrap())
-        // TODO(anfelo): use a better filter, like a fuzzy finder
-        .filter(|n| n.contains(query))
+    let file_names = get_file_names(path)
+        .unwrap()
+        .into_iter()
+        .filter(|n| n.to_owned().contains(query))
         .collect::<Vec<_>>();
+
+    if file_names.is_empty() {
+        println!("No sniptips found!");
+        return Ok(());
+    }
 
     io::stdout().write_all(format!("{}\n", file_names.join("\n")).as_bytes())?;
 
@@ -50,6 +54,21 @@ pub fn show_snip(path: &String) -> Result<()> {
     Ok(())
 }
 
+pub fn list_snips(path: &String) -> Result<()> {
+    let file_names = get_file_names(path)?;
+
+    if file_names.is_empty() {
+        println!("No sniptips found!");
+        return Ok(());
+    }
+
+    io::stdout()
+        .write_all(format!("{}\n", file_names.join("\n")).as_bytes())
+        .with_context(|| format!("Could not read sniptips store at path: {}", path))?;
+
+    Ok(())
+}
+
 pub fn delete_snip(path: &String) -> Result<()> {
     fs::remove_file(path)
         .with_context(|| format!("Could not remove sniptip located at: {}", path))?;
@@ -57,4 +76,20 @@ pub fn delete_snip(path: &String) -> Result<()> {
     println!("Sniptip deleted!");
 
     Ok(())
+}
+
+fn get_file_names(path: &String) -> Result<Vec<String>> {
+    let dir = fs::read_dir(path)?;
+
+    let paths = dir
+        .map(|res| res.map(|e| e.path()))
+        .collect::<Result<Vec<_>, io::Error>>()?;
+
+    let file_names = paths
+        .iter()
+        .filter(|p| !p.is_dir())
+        .map(|h| h.file_name().unwrap().to_str().unwrap().to_string())
+        .collect::<Vec<_>>();
+
+    Ok(file_names)
 }
