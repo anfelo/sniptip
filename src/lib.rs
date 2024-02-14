@@ -5,6 +5,7 @@ use std::{
 };
 
 use anyhow::{Context, Result};
+use clippers::{Clipboard, ClipperData};
 
 pub fn init(path: &String) -> Result<()> {
     if fs::try_exists(path).is_ok_and(|x| x) {
@@ -19,12 +20,23 @@ pub fn init(path: &String) -> Result<()> {
 
 pub fn add_snip(path: &String, snip: &String) -> Result<()> {
     let mut file = File::create(path)?;
-
     file.write_all(snip.as_bytes())?;
-
     println!("Sniptip saved!");
 
     Ok(())
+}
+
+pub fn add_snip_from_clipboard(path: &String) -> Result<()> {
+    let mut clipboard = Clipboard::get();
+    match clipboard.read() {
+        Some(ClipperData::Text(text)) => {
+            add_snip(path, &text.as_str().to_owned())
+        }
+        _ => {
+            println!("No snip found in the clipboard!");
+            Ok(())
+        }
+    }
 }
 
 pub fn query_snip(query: &String, path: &String) -> Result<()> {
