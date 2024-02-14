@@ -15,12 +15,16 @@ pub enum Commands {
     /// Adds a sniptip
     Add(AddArgs),
 
+    /// Adds a sniptip from the clipboard
+    AddClip { name: String },
+
     /// Queries for a sniptip
     Query { query: String },
 
     /// Shows a sniptip
     Show { name: String },
 
+    /// Lists all sniptips
     List,
 
     /// Deletes a sniptip
