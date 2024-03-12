@@ -90,6 +90,14 @@ pub fn delete_snip(path: &String) -> Result<()> {
     Ok(())
 }
 
+pub fn check_init(sniptips_dir: &String) {
+    if !sniptips_dir.is_empty() && !std::path::Path::new(&sniptips_dir).exists() {
+        eprintln!("{}", sniptips_dir);
+        eprintln!("Sniptips not initialized. Run `sniptip init` to initialize.");
+        std::process::exit(1);
+    }
+}
+
 fn get_file_names(path: &String) -> Result<Vec<String>> {
     let dir = fs::read_dir(path)?;
 
