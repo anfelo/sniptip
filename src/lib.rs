@@ -1,12 +1,12 @@
 use std::{
     fs::{self, File},
-    io::{self, Write},
+    io::{self, Write}, path::Path,
 };
 
 use anyhow::{Context, Result};
 
 pub fn init(path: &String) -> Result<()> {
-    if fs::try_exists(path).is_ok_and(|x| x) {
+    if Path::new(path).exists() {
         println!("Already initialized!");
         return Ok(());
     }
