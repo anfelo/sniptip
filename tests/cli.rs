@@ -1,5 +1,4 @@
 use assert_cmd::prelude::*;
-use clippers::Clipboard;
 use predicates::prelude::*;
 use std::{fs, process::Command};
 
@@ -66,43 +65,6 @@ fn add_sniptip() -> Result<(), Box<dyn std::error::Error>> {
     cmd.assert()
         .success()
         .stdout(predicate::str::contains("Sniptip saved!"));
-
-    fs::remove_dir_all("/tmp/.sniptip").ok();
-
-    Ok(())
-}
-
-#[test]
-fn add_clip_sniptip() -> Result<(), Box<dyn std::error::Error>> {
-    fs::create_dir("/tmp/.sniptip").ok();
-
-    let mut cmd = Command::cargo_bin("sniptip")?;
-
-    // Run the add from clipboard command without needed arguments
-    cmd.env("SNIPS_BASE", "/tmp").arg("add-clip");
-    cmd.assert()
-        .failure()
-        .stderr(predicate::str::contains("arguments were not provided"));
-
-    // Write to clipboard
-    let mut clipboard = Clipboard::get();
-    clipboard.write_text("Hello, world!").unwrap();
-
-    // Add a sniptip
-    cmd.args(&["sniptip_name"]);
-    cmd.assert()
-        .success()
-        .stdout(predicate::str::contains("Sniptip saved!"));
-
-    // Try to show the deleted sniptip
-    let mut cmd_query = Command::cargo_bin("sniptip")?;
-    cmd_query
-        .env("SNIPS_BASE", "/tmp")
-        .args(&["show", "sniptip_name"]);
-    cmd_query
-        .assert()
-        .success()
-        .stdout(predicate::str::contains("Hello, world!"));
 
     fs::remove_dir_all("/tmp/.sniptip").ok();
 

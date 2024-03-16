@@ -23,12 +23,6 @@ fn main() -> Result<()> {
             sniptip::add_snip(&path, &args.snip)
                 .with_context(|| format!("Unable to add sniptip: {}", args.name))?;
         }
-        Commands::AddClip { name } => {
-            let path = format!("{}/{}", sniptips_dir, name);
-            sniptip::check_init(&sniptips_dir);
-            sniptip::add_snip_from_clipboard(&path)
-                .with_context(|| format!("Unable to add sniptip from clipboard: {}", name))?;
-        }
         Commands::Query { query } => {
             sniptip::check_init(&sniptips_dir);
             sniptip::query_snip(query, &sniptips_dir).with_context(|| {
