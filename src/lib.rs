@@ -1,4 +1,3 @@
-#![feature(fs_try_exists)]
 use std::{
     fs::{self, File},
     io::{self, Write},
