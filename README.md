@@ -10,7 +10,7 @@ Use the `install.sh` script to install in your machine or download
 the binaries from the [releases](https://github.com/anfelo/sniptip/releases) list.
 
 ```bash
-$ curl -LSfs https://anfelo.github.io/scripts/install.sh | \
+curl -LSfs https://anfelo.github.io/scripts/install.sh | \
     sh -s -- --git anfelo/sniptip
 ```
 
