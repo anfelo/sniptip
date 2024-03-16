@@ -1,6 +1,6 @@
 [package]
 name = "sniptip"
-version = "0.1.5"
+version = "0.1.6"
 edition = "2021"
 authors = ["Andres Osorio <af.osorio1341@gmail.com>"]
 license = "MIT"
