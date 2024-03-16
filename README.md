@@ -7,7 +7,7 @@ TODO
 
 ## Installation
 Use the `install.sh` script to install in your machine or download
-the binaries from the [releases](https://github.com/anfelo/sniptip) list.
+the binaries from the [releases](https://github.com/anfelo/sniptip/releases) list.
 
 ```bash
 $ curl -LSfs https://github.com/anfelo/sniptip/install.sh | \
