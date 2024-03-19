@@ -25,12 +25,12 @@ jobs:
             os: ubuntu-latest
             target: x86_64-unknown-linux-gnu
 
-          - build: macos
+          - build: macos-amd64
             os: macos-latest
             target: x86_64-apple-darwin
 
-          - build: macos-silicon
-            os: macos-13
+          - build: macos-arm64
+            os: macos-latest
             target: aarch64-apple-darwin
 
     steps:
@@ -42,20 +42,29 @@ jobs:
         run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
 
       - name: Install Rust
-        # Or @nightly if you want
-        uses: actions-rs/toolchain@v1
-        # Arguments to pass in
+        uses: dtolnay/rust-toolchain@stable
         with:
-          # Make Rust compile to our target (defined in the matrix)
-          toolchain: stable
-          targets: ${{ matrix.target }}
+          targets: "${{ matrix.target }}"
 
-      - name: Build
-        uses: actions-rs/cargo@v1
-        with:
-          use-cross: true
-          command: build
-          args: --verbose --release --target ${{ matrix.target }}
+      - name: Setup Cache
+        uses: Swatinem/rust-cache@v2
+
+      - name: Build Binary
+        run: cargo build --verbose --locked --release --target ${{ matrix.target }}      # - name: Install Rust
+      #   # Or @nightly if you want
+      #   uses: actions-rs/toolchain@v1
+      #   # Arguments to pass in
+      #   with:
+      #     # Make Rust compile to our target (defined in the matrix)
+      #     toolchain: stable
+      #     targets: ${{ matrix.target }}
+
+      # - name: Build
+      #   uses: actions-rs/cargo@v1
+      #   with:
+      #     use-cross: true
+      #     command: build
+      #     args: --verbose --release --target ${{ matrix.target }}
 
       - name: Build archive
         shell: bash
