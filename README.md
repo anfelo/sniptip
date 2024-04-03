@@ -3,7 +3,28 @@ Sniptip is a simple tool used to store some particular text (in my case: **code 
 in your machine and be able to access it later using the tool.
 
 ## Usage
-TODO
+
+Run `sniptip help` for info on how to use the tool
+
+Init (Run this first)
+```bash
+sniptip init
+```
+
+Save a snippet
+```bash
+sniptip add {name} {snippet}
+```
+
+Show a snippet
+```bash
+sniptip show {name}
+```
+
+List snippets saved
+```bash
+sniptip list
+```
 
 ## Installation
 Use the `install.sh` script to install in your machine or download
